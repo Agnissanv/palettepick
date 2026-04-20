@@ -544,3 +544,134 @@ footer a:hover{color:var(--text)}
   /* Divers */
   .cta-banner h3 { font-size: 1.8rem; }
 }
+
+/* temoins */
+/* ==========================================
+   CSS SECTION TÉMOIGNAGES (MARQUEE)
+   ========================================== */
+
+#testimonials {
+  background-color: var(--bg); /* Fond sombre profond, idéal pour le contraste */
+  padding: 60px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  width: 100%;
+  overflow: hidden; /* Empêche l'apparition d'une barre de défilement horizontale */
+}
+
+.testimonials-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.testimonials-title {
+  text-align: center;
+  font-family: sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--text);
+  margin-top: 0;
+  margin-bottom: 40px;
+}
+
+.marquee-wrapper {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+}
+
+/* Effets de fondu (Fade) sur les bords droit et gauche */
+.marquee-wrapper::before,
+.marquee-wrapper::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  width: 100px;
+  height: 100%;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.marquee-wrapper::before {
+  left: 0;
+  background: linear-gradient(to right, #0d1117, transparent);
+}
+
+.marquee-wrapper::after {
+  right: 0;
+  background: linear-gradient(to left, #0d1117, transparent);
+}
+
+/* Le conteneur qui défile */
+.marquee-content {
+  display: flex;
+  align-items: center;
+  gap: 80px; /* Espace régulier entre chaque logo */
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  width: max-content; /* Règle d'or : force la liste à s'étendre sur une seule ligne */
+  animation: scroll-marquee 35s linear infinite;
+}
+
+/* Met l'animation en pause quand l'utilisateur survole les logos */
+.marquee-content:hover {
+  animation-play-state: paused;
+}
+
+.marquee-content li {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Style des logos (Images) */
+.marquee-content li img {
+  display: block;
+  height: 35px; /* Force une taille homogène */
+  width: auto;
+  
+  /* --- LA MAGIE EST ICI --- */
+  filter: brightness(0) invert(1); /* Transforme le noir en blanc pur */
+  opacity: 0.6; /* Légèrement transparent pour ne pas être trop agressif */
+  /* ------------------------ */
+  
+  transition: all 0.3s ease-in-out;
+}
+
+/* Effet au survol : le logo redevient clair et net */
+.marquee-content li img:hover {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+/* L'animation magique */
+@keyframes scroll-marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    /* Décale exactement de 50% pour créer la boucle parfaite avec la liste doublée */
+    transform: translateX(-50%);
+  }
+}
+
+/* Adaptation pour les écrans de téléphone */
+@media (max-width: 768px) {
+  .marquee-content {
+    gap: 50px;
+    animation-duration: 25s; /* Défilement un peu plus rapide sur petit écran */
+  }
+  .marquee-wrapper::before,
+  .marquee-wrapper::after {
+    width: 40px; /* Réduit la zone de fondu pour laisser plus de place aux logos */
+  }
+  .marquee-content li img {
+    transform: scale(0.85); /* Réduit légèrement la taille des images */
+  }
+}
