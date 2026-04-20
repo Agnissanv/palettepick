@@ -29,6 +29,11 @@ const cssCode=document.getElementById('cssCode');
 const cssCopyBtn=document.getElementById('cssCopyBtn');
 const resetBtn=document.getElementById('resetBtn');
 
+
+
+
+
+
 dropZone.addEventListener('dragover',e=>{e.preventDefault();dropZone.classList.add('drag')});
 dropZone.addEventListener('dragleave',()=>dropZone.classList.remove('drag'));
 dropZone.addEventListener('drop',e=>{
@@ -41,7 +46,7 @@ fileInput.addEventListener('change',()=>{if(fileInput.files[0])handleFile(fileIn
 document.getElementById('countBar').querySelectorAll('.count-btn').forEach(btn=>{
   btn.addEventListener('click',()=>{
     const n=parseInt(btn.dataset.n);
-    if(n>5){goto('pricing');return;}
+    // La limitation a été retirée pour offrir toutes les fonctionnalités gratuitement
     document.getElementById('countBar').querySelectorAll('.count-btn').forEach(b=>b.classList.remove('active'));
     btn.classList.add('active');
     colorCount=n;
@@ -97,6 +102,9 @@ function analyze(){
   cssCode.innerHTML=cssLines;
   cssPanel.classList.add('visible');
 }
+
+
+
 
 function copyVal(text,btn){
   navigator.clipboard.writeText(text).then(()=>{

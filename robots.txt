@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://agnissanv.github.io/palettepick/sitemap.xml

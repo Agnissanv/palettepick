@@ -22,6 +22,21 @@
         </div>
         <a href="tool.html"><button class="nav-cta">Essayer gratuitement</button></a>
     </nav>
+
+
+    <!-- Contenu de fallback pour le SEO - Invisible pour l'utilisateur, lisible par Google -->
+<div style="display: none;">
+    <h1>Générateur de Palette de Couleurs en Ligne - PalettePick</h1>
+    <p>Utilise l'outil gratuit et 100% privé de PalettePick pour extraire les couleurs dominantes de n'importe quelle image. Glisse-dépose une photo, un logo ou une capture d'écran et obtiens instantanément les codes HEX et RVB de ta palette. Aucune image n'est envoyée sur nos serveurs : tout se passe localement dans ton navigateur.</p>
+    <p>Fonctionnalités : extraction des couleurs, export de la palette au format image ou texte, prévisualisation des couleurs complémentaires, export pour Tailwind CSS et SCSS (bientôt disponible).</p>
+    <ul>
+        <li>Extraction rapide des couleurs dominantes</li>
+        <li>Formats HEX, RVB</li>
+        <li>Confidentialité garantie (traitement 100% local)</li>
+        <li>Interface intuitive par glisser-déposer</li>
+        <li>Gratuit et illimité</li>
+    </ul>
+</div>
     
 
 
@@ -57,9 +72,9 @@
         <img class="result-img" id="resultImg" src="" alt="aperçu">
         <div class="palette-list">
           <div class="count-bar" id="countBar">
-            <button class="count-btn active" data-n="5">5 couleurs</button>
-            <button class="count-btn" data-n="8">8 couleurs <span class="pro-tag">PRO</span></button>
-            <button class="count-btn" data-n="10">10 couleurs <span class="pro-tag">PRO</span></button>
+            <button class="count-btn active" data-n="5">5 couleurs <span class="pro-tag" title="Fonctionnalité gratuite">GRATUIT</span></button>
+            <button class="count-btn" data-n="8">8 couleurs <span class="pro-tag" title="Fonctionnalité prémium débloquée">PRO DEBLOQUÉ</span></button>
+            <button class="count-btn" data-n="10">10 couleurs <span class="pro-tag" title="Fonctionnalité premium débloquée">PRO DEBLOQUÉ</span></button>
           </div>
           <div id="paletteList"></div>
         </div>
