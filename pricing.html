@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tarifs — Extrait les couleurs de n'importe quelle image</title>
+<meta name="description" content="Dépose une image, obtiens les codes HEX, RGB et tes variables CSS en 2 secondes.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+
+</head>
+<body>
+    <nav>
+        <a href="pricing.html"><div class="nav-logo" >Palette<span>Pick</span></div></a>
+        <div class="nav-links">
+            <a href="index.html">Accueil</a>
+            <a href="tool.html">Outil</a>
+            <a href="pricing.html" class="active">Tarifs</a>
+            <a href="boutique.html">Boutique</a>
+        </div>
+        <a href="tool.html"><button class="nav-cta">Essayer gratuitement</button></a>
+    </nav>
+
+
+
+    
+<!-- ═══ PRICING ═══ -->
+<div class="page active" id="page-pricing">
+  <div class="pricing-wrap">
+    <div class="pricing-header">
+      <h2>Tarifs <em>directs.</em><br>Sans surprise.</h2>
+      <p>Commence gratuitement. Passe Pro quand tu en as besoin.</p>
+    </div>
+    <div class="pricing-grid">
+      <div class="plan">
+        <p class="plan-name">GRATUIT</p>
+        <p class="plan-price">0€ <span>/ toujours</span></p>
+        <p class="plan-desc">Pour tester l'outil et l'intégrer dans tes premiers projets.</p>
+        <ul class="plan-features">
+          <li class="yes-item"><span class="check yes"></span>5 couleurs extraites</li>
+          <li class="yes-item"><span class="check yes"></span>Codes HEX + RGB</li>
+          <li class="yes-item"><span class="check yes"></span>Variables CSS auto-générées</li>
+          <li class="yes-item"><span class="check yes"></span>Copie en 1 clic</li>
+          <li class="yes-item"><span class="check yes"></span>100% privé — traitement local</li>
+          <li class="no-item"><span class="check no"></span>8 ou 10 couleurs</li>
+          <li class="no-item"><span class="check no"></span>Export Tailwind / SCSS</li>
+          <li class="no-item"><span class="check no"></span>Palettes sauvegardées</li>
+        </ul>
+        <a href="tool.html"><button class="plan-btn free">Commencer gratuitement</button></a>
+      </div>
+      <div class="plan pro">
+        <div class="plan-badge">Recommandé</div>
+        <p class="plan-name">PRO</p>
+        <p class="plan-price">5€ <span>/ mois</span></p>
+        <p class="plan-desc">Pour les développeurs et designers qui travaillent au quotidien.</p>
+        <ul class="plan-features">
+          <li class="yes-item"><span class="check yes"></span>Tout le gratuit inclus</li>
+          <li class="yes-item"><span class="check yes"></span>Jusqu'à 10 couleurs par image</li>
+          <li class="yes-item"><span class="check yes"></span>Export CSS / Tailwind / SCSS</li>
+          <li class="yes-item"><span class="check yes"></span>Palettes sauvegardées</li>
+          <li class="yes-item"><span class="check yes"></span>Analyses illimitées</li>
+          <li class="yes-item"><span class="check yes"></span>Nouvelles fonctions en avant-première</li>
+        </ul>
+        <button class="plan-btn paid">Passer Pro — 5€/mois</button>
+      </div>
+    </div>
+
+    <div class="faq">
+      <div class="faq-title">Questions fréquentes</div>
+      <div class="faq-item">
+        <div class="faq-q">Mes images sont-elles envoyées sur un serveur ?</div>
+        <div class="faq-a">Non. L'extraction se fait entièrement dans ton navigateur via l'API Canvas. Aucune image ne quitte ton appareil.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">La version gratuite est-elle vraiment gratuite ?</div>
+        <div class="faq-a">Oui, sans limite de temps. Tu peux extraire des palettes autant de fois que tu veux, gratuitement, pour toujours.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Puis-je annuler le Pro à tout moment ?</div>
+        <div class="faq-a">Oui, sans engagement. Tu annules en un clic et repasses automatiquement en version gratuite à la fin du mois.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Quel format d'image est accepté ?</div>
+        <div class="faq-a">PNG, JPG et WEBP. Photos, illustrations, captures d'écran — tout fonctionne. Plus l'image est colorée, plus la palette sera riche.</div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-logo">Palette<span>Pick</span></div>
+    <p>Un outil par <a href="https://agnissanv.github.io/Portofolio_Agnissan_Isaac.io/" target="_blank">Agnissan Isaac</a> — Code A-Z &nbsp;·&nbsp; <a href="index.html">Accueil</a> &nbsp;·&nbsp; <a href="tool.html">Outil</a> &nbsp;·&nbsp; <a href="boutique.html">Boutique</a></p>
+  </footer>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.0/color-thief.umd.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

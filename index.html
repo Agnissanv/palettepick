@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PalettePick — Extrait les couleurs de n'importe quelle image</title>
+<meta name="description" content="Dépose une image, obtiens les codes HEX, RGB et tes variables CSS en 2 secondes.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+
+</head>
+<body>
+
+    <nav>
+        <a href="index.html"><div class="nav-logo" >Palette<span>Pick</span></div></a>
+        <div class="nav-links">
+            <a href="index.html" class="active">Accueil</a>
+            <a href="tool.html">Outil</a>
+            <a href="pricing.html">Tarifs</a>
+            <a href="boutique.html">Boutique</a>
+        </div>
+        <a href="tool.html"><button class="nav-cta">Essayer gratuitement</button></a>
+    </nav>
+
+<!-- ═══ LANDING ═══ -->
+<div class="page active" id="page-landing">
+  <section class="hero">
+    <div class="hero-glow"></div>
+    <div class="hero-line"></div>
+    <div class="hero-badge">Outil Design & Code — Code A-Z</div>
+    <h1>Ta prochaine palette<br>est déjà dans<br><em>ton image.</em></h1>
+    <p class="hero-sub">Dépose n'importe quelle image. Récupère les codes HEX, RGB et tes variables CSS prêtes à l'emploi. En 2 secondes.</p>
+    <div class="hero-actions">
+      <a href="tool.html"><button class="btn-primary">Extraire ma palette →</button></a>
+      <a href="pricing.html"><button class="btn-ghost">Voir les tarifs</button></a>
+    </div>
+  </section>
+
+  <div class="demo-preview">
+    <div class="demo-card">
+      <div class="demo-card-header">
+        <div class="dot-r"></div><div class="dot-y"></div><div class="dot-g"></div>
+        <span style="margin-left:8px;font-size:12px;color:var(--muted);font-family:var(--font-mono)">palettepick.app — extraire une palette</span>
+      </div>
+      <div class="demo-inner">
+        <div class="demo-img-row">
+          <div class="demo-img-placeholder"></div>
+          <div class="demo-colors">
+            <div class="demo-color-row"><div class="demo-swatch" style="background:#1a1a2e"></div><span class="demo-hex">#1A1A2E</span><span class="demo-tag">--color-primary</span></div>
+            <div class="demo-color-row"><div class="demo-swatch" style="background:#16213e"></div><span class="demo-hex">#16213E</span><span class="demo-tag">--color-secondary</span></div>
+            <div class="demo-color-row"><div class="demo-swatch" style="background:#0f3460"></div><span class="demo-hex">#0F3460</span><span class="demo-tag">--color-accent</span></div>
+            <div class="demo-color-row"><div class="demo-swatch" style="background:#533483"></div><span class="demo-hex">#533483</span><span class="demo-tag">--color-neutral</span></div>
+            <div class="demo-color-row"><div class="demo-swatch" style="background:#e94560"></div><span class="demo-hex">#E94560</span><span class="demo-tag">--color-highlight</span></div>
+          </div>
+        </div>
+        <div class="demo-css"><span class="kw">:root</span> {
+          <span class="prop">--color-primary</span>:   <span class="val">#1A1A2E</span>;
+          <span class="prop">--color-secondary</span>: <span class="val">#16213E</span>;
+          <span class="prop">--color-accent</span>:    <span class="val">#0F3460</span>;
+        }</div>
+      </div>
+    </div>
+  </div>
+
+  <section class="features">
+    <div class="section-label">Ce que tu obtiens</div>
+    <div class="section-title">Simple. Direct.<br>Prêt à coder.</div>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-num">01</div>
+        <div class="feature-title">Extraction instantanée</div>
+        <div class="feature-desc">Traitement local dans le navigateur. Aucun upload, aucune attente. Résultat immédiat.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-num">02</div>
+        <div class="feature-title">HEX · RGB · CSS</div>
+        <div class="feature-desc">Trois formats copiables en un clic. Compatible design tools et tous les frameworks CSS.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-num">03</div>
+        <div class="feature-title">Variables CSS auto</div>
+        <div class="feature-desc">Reçois <code style="font-size:11px;background:rgba(230,0,38,0.1);color:#e60026;padding:1px 5px;border-radius:3px">--color-primary</code> et ses copains directement nommés et prêts.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-num">04</div>
+        <div class="feature-title">100% privé</div>
+        <div class="feature-desc">Rien ne quitte ton appareil. Zéro serveur, zéro tracking. L'image reste chez toi.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-num">05</div>
+        <div class="feature-title">Export Tailwind & SCSS</div>
+        <div class="feature-desc">Pro : exporte en config Tailwind ou variables SCSS, immédiatement utilisables.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-num">06</div>
+        <div class="feature-title">Palettes sauvegardées</div>
+        <div class="feature-desc">Pro : retrouve tes palettes passées en un clic. Plus besoin de ré-analyser.</div>
+      </div>
+    </div>
+  </section>
+
+
+  
+
+  <section class="how">
+    <div class="section-label" style="margin-bottom:1.5rem">Comment ça marche</div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">01 —</div>
+        <div><div class="step-title">Dépose ton image</div><div class="step-desc">PNG, JPG, WEBP. Drag & drop ou clic. N'importe quelle image fonctionne.</div></div>
+      </div>
+      <div class="step">
+        <div class="step-num">02 —</div>
+        <div><div class="step-title">Choisis le nombre de couleurs</div><div class="step-desc">5 couleurs gratuitement. Jusqu'à 10 en Pro avec nuances et variations.</div></div>
+      </div>
+      <div class="step">
+        <div class="step-num">03 —</div>
+        <div><div class="step-title">Copie et code</div><div class="step-desc">HEX, RGB, variables CSS — tout est prêt. Colle dans ton projet et c'est parti.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="cta-banner">
+    <h3>Prêt à choisir tes couleurs ?</h3>
+    <p>Aucune inscription. Aucune carte bancaire. Gratuit maintenant.</p>
+    <a href="tool.html"><button class="btn-white" >Extraire ma première palette →</button></a>
+  </div>
+
+  <footer>
+    <div class="footer-logo">Palette<span>Pick</span></div>
+    <p>Un outil par <a href="https://agnissanv.github.io/Portofolio_Agnissan_Isaac.io/" target="_blank">Agnissan Isaac</a> — Code A-Z &nbsp;·&nbsp; <a href="tool.html">Outil</a> &nbsp;·&nbsp; <a href="pricing.html">Tarifs</a> &nbsp;·&nbsp; <a href="boutique.html">Boutique</a></p>
+  </footer>
+</div>
+
+
+
+
+<div class="toast-global" id="globalToast">Copié !</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.0/color-thief.umd.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
