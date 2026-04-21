@@ -52,20 +52,28 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-display);min-
 }
 
 .modal-left {
-    background: #FF0000; /* Le rouge de Code A-Z */
+    background: #FF0000;
     flex: 1;
     border-top-left-radius: 20px;
     border-bottom-left-radius: 20px;
+    
+    /* ÉTAPE CRUCIAL : On coupe tout ce qui dépasse de ce bloc */
+    overflow: hidden; 
+    
     display: flex;
-    align-items: flex-end;
+    align-items: flex-end; /* Pour que tu sois bien posé en bas */
     justify-content: center;
 }
 
 .profile-img {
-    width: 120%; /* Plus large que le container pour l'effet de débordement */
-    height: auto;
-    margin-bottom: -5px; /* Aligné au bas */
-    transform: translateY(-20px); /* Fait remonter la tête au-dessus du cadre */
+    /* ÉTAPE CRUCIAL : L'image doit s'adapter à la largeur du bloc rouge */
+    width: 100%; 
+    height: 100%;
+    
+    /* "object-fit: cover" permet de remplir le cadre sans déformer ton visage */
+    object-fit: cover; 
+    
+    display: block;
 }
 
 .modal-right {
