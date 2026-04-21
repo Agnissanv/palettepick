@@ -24,7 +24,44 @@
         <a href="tool.html"><button class="nav-cta">Essayer gratuitement</button></a>
     </nav>
 
+<!-- debut pop up -->
+<div id="customPopup" class="modal-overlay">
+    <div class="modal-container">
+        <button id="closeBtn" class="close-x">&times;</button>
 
+        <div class="modal-left">
+            <img src="..." alt="Isaac" class="profile-img">
+        </div>
+
+        <div class="modal-right">
+            <h1>Salut !</h1>
+            <p>Merci beaucoup d'être venu ici !<br>
+               Je suis <strong>Isaac</strong>, créateur de Code A-Z.<br>
+               J'aimerais avoir vos retours ou simplement vous dire bonjour ! 😊
+            </p>
+            
+            <div class="social-links">
+                <span>CONTACTEZ-MOI SUR</span>
+                <div class="icons">
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fas fa-globe"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+<!-- fin pop up -->
 
 <div style="display: none;">
 <h2>PalettePick - L'outil simple pour créer des palettes de couleurs</h2>
@@ -182,8 +219,8 @@
 
 
 <div class="toast-global" id="globalToast">Copié !</div>
-<script defer src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.0/color-thief.umd.js"></script>
-<script defer src="js/app.js"></script>
+<script  src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.0/color-thief.umd.js"></script>
+<script src="js/app.js"></script>
 
 </body>
 </html>
