@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fonctionnalités Pro — Bientôt disponibles · PalettePick</title>
+  <meta name="description" content="Les fonctionnalités Pro de PalettePick arrivent bientôt. Laisse ton email pour être parmi les premiers notifiés." />
+  <meta name="robots" content="noindex" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --red: #e60026;
+      --red-dim: rgba(230, 0, 38, 0.12);
+      --red-border: rgba(230, 0, 38, 0.4);
+      --bg: #080808;
+      --surface: #111111;
+      --surface-2: #181818;
+      --border: rgba(255,255,255,0.08);
+      --border-hover: rgba(255,255,255,0.18);
+      --text: #f5f5f5;
+      --text-muted: #888888;
+      --text-dim: #555555;
+      --font-display: 'Syne', sans-serif;
+      --font-body: 'DM Sans', sans-serif;
+    }
+
+    html, body {
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Ambient glow */
+    body::before {
+      content: '';
+      position: fixed;
+      top: -200px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 700px;
+      height: 500px;
+      background: radial-gradient(ellipse, rgba(230,0,38,0.07) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ─── Nav ─── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2rem;
+      border-bottom: 1px solid var(--border);
+      background: rgba(8,8,8,0.85);
+      backdrop-filter: blur(12px);
+      z-index: 10;
+    }
+
+    .nav-logo {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 15px;
+      color: var(--text);
+      text-decoration: none;
+      letter-spacing: -0.3px;
+    }
+
+    .nav-logo span { color: var(--red); }
+
+    .nav-links {
+      display: flex;
+      gap: 1.5rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: 13px;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--text); }
+
+    /* ─── Main card ─── */
+    .card {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 520px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 3rem 2.5rem;
+      margin-top: 56px;
+    }
+
+    /* Red top accent line */
+    .card::before {
+      content: '';
+      position: absolute;
+      top: -1px; left: 24px; right: 24px;
+      height: 2px;
+      background: var(--red);
+      border-radius: 0 0 2px 2px;
+    }
+
+    /* ─── Badge ─── */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--red-dim);
+      border: 1px solid var(--red-border);
+      color: #ff4d6a;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 5px 12px;
+      border-radius: 100px;
+      margin-bottom: 1.5rem;
+    }
+
+    .badge-dot {
+      width: 6px; height: 6px;
+      background: var(--red);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.8); }
+    }
+
+    /* ─── Heading ─── */
+    h1 {
+      font-family: var(--font-display);
+      font-size: clamp(26px, 5vw, 34px);
+      font-weight: 800;
+      line-height: 1.15;
+      letter-spacing: -0.03em;
+      margin-bottom: 0.75rem;
+    }
+
+    h1 em {
+      font-style: normal;
+      color: var(--red);
+    }
+
+    .subtitle {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 2rem;
+    }
+
+    /* ─── Features teaser ─── */
+    .features {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 2rem;
+    }
+
+    .feature-chip {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 12px;
+      color: var(--text-muted);
+      transition: border-color 0.2s;
+    }
+
+    .feature-chip:hover { border-color: var(--border-hover); }
+
+    .feature-chip svg {
+      flex-shrink: 0;
+      color: var(--red);
+    }
+
+    /* ─── Form ─── */
+    .form-group {
+      margin-bottom: 1rem;
+    }
+
+    label {
+      display: block;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 6px;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    select {
+      width: 100%;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-family: var(--font-body);
+      font-size: 14px;
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.2s, background 0.2s;
+      appearance: none;
+      -webkit-appearance: none;
+    }
+
+    input[type="text"]::placeholder,
+    input[type="email"]::placeholder { color: var(--text-dim); }
+
+    input[type="text"]:focus,
+    input[type="email"]:focus,
+    select:focus {
+      border-color: var(--red-border);
+      background: rgba(230,0,38,0.04);
+    }
+
+    .select-wrap {
+      position: relative;
+    }
+
+    .select-wrap::after {
+      content: '';
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 0; height: 0;
+      border-left: 4px solid transparent;
+      border-right: 4px solid transparent;
+      border-top: 5px solid var(--text-muted);
+      pointer-events: none;
+    }
+
+    select option { background: #1a1a1a; color: var(--text); }
+
+    .optional-tag {
+      font-size: 10px;
+      color: var(--text-dim);
+      text-transform: none;
+      letter-spacing: 0;
+      margin-left: 6px;
+      font-weight: 400;
+    }
+
+    /* ─── CTA ─── */
+    .btn-submit {
+      width: 100%;
+      margin-top: 1.25rem;
+      padding: 14px;
+      background: var(--red);
+      color: #fff;
+      font-family: var(--font-display);
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.15s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-submit:hover { background: #cc001f; }
+    .btn-submit:active { transform: scale(0.98); }
+
+    .btn-submit.loading {
+      pointer-events: none;
+      background: #8a0015;
+    }
+
+    .btn-submit .btn-text { transition: opacity 0.2s; }
+    .btn-submit.loading .btn-text { opacity: 0; }
+
+    .spinner {
+      display: none;
+      position: absolute;
+      inset: 0;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn-submit.loading .spinner { display: flex; }
+
+    .spinner svg {
+      animation: spin 0.7s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ─── Privacy note ─── */
+    .privacy {
+      margin-top: 0.75rem;
+      font-size: 11px;
+      color: var(--text-dim);
+      text-align: center;
+      line-height: 1.5;
+    }
+
+    /* ─── Success state ─── */
+    .success-state {
+      display: none;
+      text-align: center;
+      padding: 1rem 0;
+      animation: fadeUp 0.4s ease;
+    }
+
+    .success-state.show { display: block; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .success-icon {
+      width: 64px; height: 64px;
+      background: rgba(0, 200, 100, 0.1);
+      border: 1px solid rgba(0, 200, 100, 0.3);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.5rem;
+    }
+
+    .success-title {
+      font-family: var(--font-display);
+      font-size: 24px;
+      font-weight: 800;
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.03em;
+    }
+
+    .success-sub {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+    }
+
+    .btn-back {
+      display: inline-block;
+      font-size: 13px;
+      color: var(--text-muted);
+      text-decoration: none;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 16px;
+      transition: border-color 0.2s, color 0.2s;
+    }
+
+    .btn-back:hover { border-color: var(--border-hover); color: var(--text); }
+
+    /* ─── Error ─── */
+    .error-msg {
+      display: none;
+      font-size: 12px;
+      color: #ff4d6a;
+      margin-top: 0.5rem;
+      padding: 8px 12px;
+      background: rgba(230,0,38,0.08);
+      border: 1px solid rgba(230,0,38,0.25);
+      border-radius: 8px;
+    }
+
+    .error-msg.show { display: block; }
+
+    /* ─── Footer ─── */
+    .footer {
+      margin-top: 1.5rem;
+      font-size: 12px;
+      color: var(--text-dim);
+      text-align: center;
+    }
+
+    .footer a { color: var(--text-muted); text-decoration: none; }
+    .footer a:hover { color: var(--text); }
+
+    @media (max-width: 480px) {
+      .card { padding: 2rem 1.5rem; }
+      .features { grid-template-columns: 1fr; }
+      nav { padding: 0 1rem; }
+      .nav-links { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="index.html" class="nav-logo">Palette<span>Pick</span></a>
+    <ul class="nav-links">
+      <li><a href="index.html">Accueil</a></li>
+      <li><a href="tool.html">Outil</a></li>
+      <li><a href="pricing.html">Tarifs</a></li>
+    </ul>
+  </nav>
+
+  <div class="card">
+
+    <!-- Form view -->
+    <div id="form-view">
+      <div class="badge">
+        <span class="badge-dot"></span>
+        Bientôt disponible
+      </div>
+
+      <h1>Les features <em>Pro</em><br>arrivent bientôt.</h1>
+      <p class="subtitle">Laisse ton email — tu seras le premier informé dès l'ouverture, avec une offre de lancement exclusive.</p>
+
+      <div class="features">
+        <div class="feature-chip">
+          <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path d="M12 3v1m0 16v1M3 12h1m16 0h1M5.6 5.6l.7.7M17.7 17.7l.7.7M17.7 6.3l-.7.7M6.3 17.7l-.7.7"/>
+          </svg>
+          Jusqu'à 10 couleurs
+        </div>
+        <div class="feature-chip">
+          <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path d="M8 9l4-4 4 4m0 6l-4 4-4-4"/>
+          </svg>
+          Export Tailwind / SCSS
+        </div>
+        <div class="feature-chip">
+          <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path d="M5 5h14v14H5zM9 9h6m-6 3h4"/>
+          </svg>
+          Palettes sauvegardées
+        </div>
+        <div class="feature-chip">
+          <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path d="M13 10V3L4 14h7v7l9-11h-7z"/>
+          </svg>
+          Accès anticipé
+        </div>
+      </div>
+
+      <form id="waitlist-form" novalidate>
+        <div class="form-group">
+          <label for="name">Prénom <span class="optional-tag">— optionnel</span></label>
+          <input type="text" id="name" name="name" placeholder="Comment tu t'appelles ?" autocomplete="given-name" />
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email <span style="color: #e60026;">*</span></label>
+          <input type="email" id="email" name="email" placeholder="toi@exemple.com" autocomplete="email" required />
+        </div>
+
+        <div class="form-group">
+          <label for="interest">Ce qui t'intéresse le plus <span class="optional-tag">— optionnel</span></label>
+          <div class="select-wrap">
+            <select id="interest" name="interest">
+              <option value="">Choisir...</option>
+              <option value="tailwind">Export Tailwind CSS</option>
+              <option value="scss">Export SCSS / variables</option>
+              <option value="palettes">Sauvegarder mes palettes</option>
+              <option value="colors">Plus de couleurs (10)</option>
+              <option value="all">Tout à la fois</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="error-msg" id="error-msg">
+          Une erreur est survenue. Réessaie dans quelques instants.
+        </div>
+
+        <button type="submit" class="btn-submit" id="submit-btn">
+          <span class="btn-text">Me notifier à l'ouverture →</span>
+          <span class="spinner">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5">
+              <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+            </svg>
+          </span>
+        </button>
+
+        <p class="privacy">🔒 Aucun spam. Juste une notification quand c'est prêt. Tu peux te désabonner à tout moment.</p>
+      </form>
+    </div>
+
+    <!-- Success view -->
+    <div class="success-state" id="success-view">
+      <div class="success-icon">
+        <svg width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="#00c864" stroke-width="2.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+        </svg>
+      </div>
+      <p class="success-title">Tu es sur la liste 🎉</p>
+      <p class="success-sub">On t'envoie un email dès que les features Pro sont disponibles. Avec une offre spéciale pour les early birds.</p>
+      <a href="tool.html" class="btn-back">← Continuer à utiliser l'outil</a>
+    </div>
+
+  </div>
+
+  <p class="footer">
+    Un outil par <a href="https://agnissanv.github.io/Portofolio_Agnissan_Isaac.io/" target="_blank">Agnissan Isaac</a>
+    &nbsp;·&nbsp;
+    <a href="tool.html">Outil gratuit</a>
+    &nbsp;·&nbsp;
+    <a href="pricing.html">Tarifs</a>
+  </p>
+
+  <script>
+    /* ── Config Supabase ── */
+    const SUPABASE_URL   = 'https://ndbridtgodhoflhmtzng.supabase.co';
+    const SUPABASE_ANON  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5kYnJpZHRnY2Rob2ZsaG10em5nIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY1OTY0NDIsImV4cCI6MjA5MjE3MjQ0Mn0.j85FQ1WFKdeUOboDfttDL6bskA-iXeuvLM9x_pG4rdM'; // Settings → API → anon public
+
+    async function submitToSupabase(payload) {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/waitlist`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': SUPABASE_ANON,
+          'Authorization': `Bearer ${SUPABASE_ANON}`,
+          'Prefer': 'return=minimal'
+        },
+        body: JSON.stringify(payload)
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        /* Email déjà enregistré → on traite comme succès (pas d'erreur visible) */
+        if (res.status === 409 || (err.code === '23505')) return true;
+        throw new Error(err.message || 'Erreur Supabase');
+      }
+      return true;
+    }
+
+    document.getElementById('waitlist-form').addEventListener('submit', async function(e) {
+      e.preventDefault();
+
+      const email    = document.getElementById('email').value.trim();
+      const name     = document.getElementById('name').value.trim();
+      const interest = document.getElementById('interest').value;
+      const btn      = document.getElementById('submit-btn');
+      const errEl    = document.getElementById('error-msg');
+
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        document.getElementById('email').focus();
+        return;
+      }
+
+      errEl.classList.remove('show');
+      btn.classList.add('loading');
+
+      try {
+        await submitToSupabase({
+          email,
+          name:     name     || null,
+          interest: interest || null
+        });
+        document.getElementById('form-view').style.display   = 'none';
+        document.getElementById('success-view').classList.add('show');
+      } catch (err) {
+        console.error(err);
+        errEl.textContent = 'Une erreur est survenue. Réessaie dans quelques instants.';
+        errEl.classList.add('show');
+        btn.classList.remove('loading');
+      }
+    });
+  </script>
+
+</body>
+</html>
