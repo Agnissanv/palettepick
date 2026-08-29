@@ -75,31 +75,51 @@ function rgbToHex(r,g,b){
 
 const varNames=['primary','secondary','accent','neutral','highlight','warm','cool','subtle','vivid','base'];
 
-function analyze(){
-  const palette=thief.getPalette(currentImg,colorCount,5);
-  paletteList.innerHTML='';
-  let cssLines='<span class="kw">:root</span> {\n';
-  palette.forEach(([r,g,b],i)=>{
-    const hex=rgbToHex(r,g,b);
-    const vn='--color-'+(varNames[i]||'color-'+(i+1));
-    cssLines+='  <span class="prop">'+vn+'</span>: <span class="val">'+hex+'</span>;\n';
-    const row=document.createElement('div');
-    row.className='pal-row';
-    row.style.animationDelay=(i*.07)+'s';
-    row.innerHTML=`
-      <div class="pal-swatch" style="background:${hex}" onclick="copyVal('${hex}')"></div>
-      <div class="pal-info">
-        <div class="pal-hex">${hex}</div>
-        <div class="pal-rgb">rgb(${r}, ${g}, ${b})</div>
-      </div>
-      <button class="copy-btn" onclick="copyVal('${hex}',this)">HEX</button>
-      <button class="copy-btn" onclick="copyVal('rgb(${r},${g},${b})',this)">RGB</button>
-    `;
-    paletteList.appendChild(row);
-  });
-  cssLines+='}';
-  cssCode.innerHTML=cssLines;
-  cssPanel.classList.add('visible');
+function analyze() {
+  try {
+    // On tente d'extraire la palette
+    const palette = thief.getPalette(currentImg, colorCount, 5);
+    
+    // Si ColorThief renvoie null (souvent le cas sur des images non supportées)
+    if (!palette) {
+      throw new Error("L'extraction a échoué.");
+    }
+
+    paletteList.innerHTML = '';
+    let cssLines = '<span class="kw">:root</span> {\n';
+    
+    palette.forEach(([r, g, b], i) => {
+      const hex = rgbToHex(r, g, b);
+      const vn = '--color-' + (varNames[i] || 'color-' + (i + 1));
+      cssLines += '  <span class="prop">' + vn + '</span>: <span class="val">' + hex + '</span>;\n';
+      
+      const row = document.createElement('div');
+      row.className = 'pal-row';
+      row.style.animationDelay = (i * 0.07) + 's';
+      row.innerHTML = `
+        <div class="pal-swatch" style="background:${hex}" onclick="copyVal('${hex}')"></div>
+        <div class="pal-info">
+          <div class="pal-hex">${hex}</div>
+          <div class="pal-rgb">rgb(${r}, ${g}, ${b})</div>
+        </div>
+        <button class="copy-btn" onclick="copyVal('${hex}',this)">HEX</button>
+        <button class="copy-btn" onclick="copyVal('rgb(${r},${g},${b})',this)">RGB</button>
+      `;
+      paletteList.appendChild(row);
+    });
+    
+    cssLines += '}';
+    cssCode.innerHTML = cssLines;
+    cssPanel.classList.add('visible');
+
+  } catch (error) {
+    // En cas d'erreur, on avertit l'utilisateur et on logue l'erreur pour le debug
+    console.error("Erreur d'analyse :", error);
+    showToast("Erreur : Image non supportée ou illisible.");
+    
+    // On réinitialise l'interface pour ne pas bloquer l'utilisateur
+    resetBtn.click();
+  }
 }
 
 
