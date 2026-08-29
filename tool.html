@@ -113,6 +113,16 @@
         </div>
         <div class="css-code" id="cssCode"></div>
       </div>
+      <!-- SECTION GRADIENT -->
+      <div id="gradientPanel" class="gradient-panel" style="margin-top: 1.5rem; display: none;">
+        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px; flex-wrap: wrap;">
+          <span style="font-size: 12px; color: var(--muted2); font-family: var(--font-mono); letter-spacing: 0.04em;">🎨 DÉGRADÉ CSS</span>
+          <button id="generateGradientBtn" class="btn-primary" style="font-size: 12px; padding: 5px 14px;">Générer un dégradé</button>
+          <button id="copyGradientBtn" class="css-copy-btn" style="display: none; font-size: 11px; padding: 5px 12px;">Copier le CSS</button>
+        </div>
+        <div id="gradientPreview" style="width: 100%; height: 80px; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 10px; background: linear-gradient(to right, #fff, #000);"></div>
+        <div id="gradientCode" style="font-family: var(--font-mono); font-size: 12px; background: var(--surface2); padding: 12px; border-radius: 6px; border-left: 2px solid var(--accent); white-space: pre-wrap; word-break: break-all; display: none;"></div>
+      </div>
       <!-- Bouton Offrir un café -->
       <button id="donateButton" style="margin-top: 1.5rem; background: none; border: 1px solid var(--border2); border-radius: 8px; padding: 10px 20px; color: var(--text); font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: 0.2s;">
         ☕ Offrir un café
@@ -132,6 +142,14 @@
             </div>
         </div>
 
+        <!-- SECTION HISTORIQUE -->
+        <div id="historyPanel" class="history-panel" style="margin-top: 2rem; display: none;">
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+            <span style="font-size: 12px; color: var(--muted2); font-family: var(--font-mono); letter-spacing: 0.04em;">📂 HISTORIQUE (10 dernières)</span>
+            <button id="clearHistoryBtn" style="background: none; border: 1px solid var(--border); border-radius: 4px; padding: 2px 10px; font-size: 10px; color: var(--muted); cursor: pointer; font-family: var(--font-mono);">Effacer</button>
+          </div>
+          <div id="historyList" style="display: flex; gap: 12px; flex-wrap: wrap;"></div>
+        </div>
       <div class="tool-actions">
         <button class="reset-btn" id="resetBtn">← Nouvelle image</button>
       </div>

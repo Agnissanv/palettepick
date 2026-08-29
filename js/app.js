@@ -102,13 +102,12 @@ const dismissDonation = document.getElementById('dismissDonation');
 
 function showDonationModal() {
   if (donationShown || !donationModal) return;
-  donationModal.style.display = 'flex';
+  donationModal.classList.add('active');
   donationShown = true;
-  saveState(); // sauvegarde pour ne pas la réafficher après rechargement
 }
 
 function hideDonationModal() {
-  if (donationModal) donationModal.style.display = 'none';
+  if (donationModal) donationModal.classList.remove('active');
 }
 
 // === Fonction d'affichage de la palette (utilisée pour restauration) ===
@@ -218,8 +217,18 @@ function analyze() {
     cssCode.innerHTML = cssLines;
     cssPanel.classList.add('visible');
 
-    // Sauvegarde et compteur
+    // === Sauvegarde dans l'historique ===
+    // On convertit la palette brute en tableau de couleurs pour l'historique
+    const colorsForHistory = palette.map(([r, g, b]) => [r, g, b]);
+    saveToHistory(colorsForHistory, colorCount, cssLines);
+
+    // Sauvegarde de l'état (restauration de session)
     saveState();
+
+    // Générer automatiquement le dégradé
+    generateGradient();
+
+    // Incrémenter le compteur et afficher la modale si nécessaire
     analysisCount++;
     if (analysisCount >= 3 && !donationShown) {
       setTimeout(showDonationModal, 300);
@@ -259,7 +268,9 @@ if (dismissDonation) dismissDonation.addEventListener('click', hideDonationModal
 
 if (donationModal) {
   donationModal.addEventListener('click', function(e) {
-    if (e.target === donationModal) hideDonationModal();
+    if (e.target === donationModal) {
+      hideDonationModal();
+    }
   });
 }
 
@@ -270,3 +281,228 @@ if (donateBtn) donateBtn.addEventListener('click', showDonationModal);
 window.addEventListener('DOMContentLoaded', function() {
   loadState();
 });
+
+// Si l'utilisateur arrive sur tool.html#donate, ouvrir la modale
+if (window.location.hash === '#donate') {
+  setTimeout(showDonationModal, 600);
+  // On retire le hash de l'URL pour ne pas le réafficher au rechargement
+  history.replaceState(null, '', window.location.pathname);
+}
+
+// ==========================================
+// HISTORIQUE (localStorage)
+// ==========================================
+const HISTORY_KEY = 'palettepick_history';
+const MAX_HISTORY = 10;
+
+function getHistory() {
+  try {
+    const raw = localStorage.getItem(HISTORY_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch { return []; }
+}
+
+function saveHistory(history) {
+  localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+}
+
+function saveToHistory(colors, count, css) {
+  const history = getHistory();
+  const entry = {
+    id: Date.now(),
+    colors: colors, // tableau de [r, g, b]
+    count: count,
+    css: css,
+    date: new Date().toLocaleDateString('fr-FR')
+  };
+  // Ajouter en tête
+  history.unshift(entry);
+  // Limiter à 10
+  if (history.length > MAX_HISTORY) history.length = MAX_HISTORY;
+  saveHistory(history);
+  renderHistory();
+}
+
+function restoreFromHistory(index) {
+  const history = getHistory();
+  const entry = history[index];
+  if (!entry) return;
+
+  // Restaurer les couleurs
+  const palette = entry.colors;
+  const count = entry.count;
+
+  // Mettre à jour le compteur de couleurs
+  document.getElementById('countBar').querySelectorAll('.count-btn').forEach(btn => {
+    btn.classList.toggle('active', parseInt(btn.dataset.n) === count);
+  });
+  colorCount = count;
+
+  // Recréer l'affichage de la palette
+  paletteList.innerHTML = '';
+  let cssLines = '<span class="kw">:root</span> {\n';
+  palette.forEach(([r, g, b], i) => {
+    const hex = rgbToHex(r, g, b);
+    const vn = '--color-' + (varNames[i] || 'color-' + (i + 1));
+    cssLines += '  <span class="prop">' + vn + '</span>: <span class="val">' + hex + '</span>;\n';
+    const row = document.createElement('div');
+    row.className = 'pal-row';
+    row.style.animationDelay = (i * 0.07) + 's';
+    row.innerHTML = `
+      <div class="pal-swatch" style="background:${hex}" onclick="copyVal('${hex}')"></div>
+      <div class="pal-info">
+        <div class="pal-hex">${hex}</div>
+        <div class="pal-rgb">rgb(${r}, ${g}, ${b})</div>
+      </div>
+      <button class="copy-btn" onclick="copyVal('${hex}',this)">HEX</button>
+      <button class="copy-btn" onclick="copyVal('rgb(${r},${g},${b})',this)">RGB</button>
+    `;
+    paletteList.appendChild(row);
+  });
+  cssLines += '}';
+  cssCode.innerHTML = cssLines;
+  cssPanel.classList.add('visible');
+
+  // Réafficher la zone de résultat
+  resultArea.classList.add('visible');
+  dropZone.style.display = 'none';
+
+  // Sauvegarder l'état pour la session
+  saveState();
+
+  // Générer automatiquement le dégradé
+  generateGradient();
+}
+
+function renderHistory() {
+  const history = getHistory();
+  const panel = document.getElementById('historyPanel');
+  const list = document.getElementById('historyList');
+
+  if (history.length === 0) {
+    panel.style.display = 'none';
+    return;
+  }
+
+  panel.style.display = 'block';
+  list.innerHTML = '';
+
+  history.forEach((entry, index) => {
+    const item = document.createElement('div');
+    item.className = 'history-item';
+
+    const swatchesDiv = document.createElement('div');
+    swatchesDiv.className = 'history-swatches';
+
+    // Afficher max 5 couleurs en vignettes
+    const displayColors = entry.colors.slice(0, 5);
+    displayColors.forEach(([r, g, b]) => {
+      const swatch = document.createElement('div');
+      swatch.className = 'history-swatch';
+      swatch.style.background = `rgb(${r}, ${g}, ${b})`;
+      swatchesDiv.appendChild(swatch);
+    });
+    if (entry.colors.length > 5) {
+      const more = document.createElement('div');
+      more.className = 'history-swatch';
+      more.style.background = 'var(--surface)';
+      more.style.display = 'flex';
+      more.style.alignItems = 'center';
+      more.style.justifyContent = 'center';
+      more.style.fontSize = '8px';
+      more.style.color = 'var(--muted2)';
+      more.textContent = `+${entry.colors.length - 5}`;
+      swatchesDiv.appendChild(more);
+    }
+
+    const meta = document.createElement('div');
+    meta.className = 'history-meta';
+    meta.textContent = `${entry.count} couleurs · ${entry.date}`;
+
+    const btn = document.createElement('button');
+    btn.className = 'history-restore-btn';
+    btn.textContent = 'RESTAURER';
+    btn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      restoreFromHistory(index);
+    });
+
+    // Clic sur l'item = restaurer aussi
+    item.addEventListener('click', function() {
+      restoreFromHistory(index);
+    });
+
+    item.appendChild(swatchesDiv);
+    item.appendChild(meta);
+    item.appendChild(btn);
+    list.appendChild(item);
+  });
+}
+
+// --- Effacer l'historique ---
+const clearHistoryBtn = document.getElementById('clearHistoryBtn');
+if (clearHistoryBtn) {
+  clearHistoryBtn.addEventListener('click', function() {
+    localStorage.removeItem(HISTORY_KEY);
+    renderHistory();
+    showToast('Historique effacé');
+  });
+}
+
+// ==========================================
+// GÉNÉRATEUR DE DÉGRADÉ
+// ==========================================
+
+function getCurrentPaletteColors() {
+  const items = paletteList.querySelectorAll('.pal-row');
+  const colors = [];
+  items.forEach(row => {
+    const hexEl = row.querySelector('.pal-hex');
+    if (hexEl) colors.push(hexEl.textContent);
+  });
+  return colors;
+}
+
+function generateGradient() {
+  const colors = getCurrentPaletteColors();
+  const panel = document.getElementById('gradientPanel');
+  const preview = document.getElementById('gradientPreview');
+  const code = document.getElementById('gradientCode');
+  const copyBtn = document.getElementById('copyGradientBtn');
+
+  if (colors.length < 2) {
+    showToast('Il faut au moins 2 couleurs pour un dégradé.');
+    return;
+  }
+
+  // Utiliser les 3 premières couleurs pour un beau dégradé
+  const gradColors = colors.slice(0, 3).join(', ');
+  const css = `background: linear-gradient(to right, ${gradColors});`;
+
+  preview.style.background = `linear-gradient(to right, ${gradColors})`;
+  code.textContent = css;
+  code.style.display = 'block';
+  copyBtn.style.display = 'inline-block';
+  panel.style.display = 'block';
+}
+
+// Écouteur pour le bouton "Générer un dégradé"
+const genGradBtn = document.getElementById('generateGradientBtn');
+if (genGradBtn) {
+  genGradBtn.addEventListener('click', generateGradient);
+}
+
+// Écouteur pour copier le CSS du dégradé
+const copyGradBtn = document.getElementById('copyGradientBtn');
+if (copyGradBtn) {
+  copyGradBtn.addEventListener('click', function() {
+    const code = document.getElementById('gradientCode');
+    if (!code) return;
+    const text = code.textContent;
+    navigator.clipboard.writeText(text).then(() => {
+      showToast('Dégradé CSS copié !');
+      copyGradBtn.textContent = '✓ Copié';
+      setTimeout(() => copyGradBtn.textContent = 'Copier le CSS', 1500);
+    });
+  });
+}
