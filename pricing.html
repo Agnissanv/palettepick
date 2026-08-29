@@ -28,46 +28,85 @@
 <!-- ═══ PRICING ═══ -->
 <div class="page active" id="page-pricing">
   <div class="pricing-wrap">
-    <div class="pricing-header">
-      <h2>Tarifs <em>directs.</em><br>Sans surprise.</h2>
-      <p>Commence gratuitement. Passe Pro quand tu en as besoin.</p>
+  <div class="pricing-header">
+    <h2>100 % gratuit<br><em>et sans limite.</em></h2>
+    <p>PalettePick est entièrement gratuit, sans publicité, sans inscription. Si l’outil vous fait gagner du temps, vous pouvez soutenir son développement.</p>
+  </div>
+
+  <div class="pricing-grid" style="grid-template-columns: 1fr; max-width: 500px; margin: 0 auto;">
+    <div class="plan" style="border-color: var(--accent); background: linear-gradient(160deg, rgba(230,0,38,0.08) 0%, var(--surface) 60%);">
+      <div class="plan-badge">🎯 Toutes les fonctionnalités</div>
+      <p class="plan-name">PALETTEPICK</p>
+      <p class="plan-price">0€ <span>/ à vie</span></p>
+      <p class="plan-desc">Extraction illimitée • Jusqu’à 10 couleurs • Export CSS, Tailwind, SCSS • Historique local • Pas de compte requis</p>
+      <ul class="plan-features">
+        <li class="yes-item"><span class="check yes"></span>Extraction 5, 8 ou 10 couleurs</li>
+        <li class="yes-item"><span class="check yes"></span>Codes HEX et RGB</li>
+        <li class="yes-item"><span class="check yes"></span>Variables CSS automatiques</li>
+        <li class="yes-item"><span class="check yes"></span>Export Tailwind / SCSS (bientôt)</li>
+        <li class="yes-item"><span class="check yes"></span>Palettes sauvegardées dans votre navigateur</li>
+        <li class="yes-item"><span class="check yes"></span>Traitement 100 % local – aucune image ne quitte votre appareil</li>
+      </ul>
+      <a href="tool.html"><button class="plan-btn free" style="background: var(--accent); color: #fff; border: none;">Utiliser maintenant →</button></a>
     </div>
-    <div class="pricing-grid">
-      <div class="plan">
-        <p class="plan-name">GRATUIT</p>
-        <p class="plan-price">0€ <span>/ toujours</span></p>
-        <p class="plan-desc">Pour tester l'outil et l'intégrer dans tes premiers projets.</p>
-        <ul class="plan-features">
-          <li class="yes-item"><span class="check yes"></span>5 couleurs extraites</li>
-          <li class="yes-item"><span class="check yes"></span>Codes HEX + RGB</li>
-          <li class="yes-item"><span class="check yes"></span>Variables CSS auto-générées</li>
-          <li class="yes-item"><span class="check yes"></span>Copie en 1 clic</li>
-          <li class="yes-item"><span class="check yes"></span>100% privé — traitement local</li>
-          <li class="no-item"><span class="check no"></span>8 ou 10 couleurs</li>
-          <li class="no-item"><span class="check no"></span>Export Tailwind / SCSS</li>
-          <li class="no-item"><span class="check no"></span>Palettes sauvegardées</li>
-        </ul>
-        <a href="tool.html"><button class="plan-btn free">Commencer gratuitement</button></a>
-      </div>
-      <div class="plan pro">
-        <div class="plan-badge">Recommandé</div>
-        <p class="plan-name">PRO</p>
-        <p class="plan-price">5€ <span>/ mois</span></p>
-        <p class="plan-desc">Pour les développeurs et designers qui travaillent au quotidien.</p>
-        <ul class="plan-features">
-          <li class="yes-item"><span class="check yes"></span>Tout le gratuit inclus</li>
-          <li class="yes-item"><span class="check yes"></span>Jusqu'à 10 couleurs par image</li>
-          <li class="yes-item"><span class="check yes"></span>Export CSS / Tailwind / SCSS</li>
-          <li class="yes-item"><span class="check yes"></span>Palettes sauvegardées</li>
-          <li class="yes-item"><span class="check yes"></span>Analyses illimitées</li>
-          <li class="yes-item"><span class="check yes"></span>Nouvelles fonctions en avant-première</li>
-        </ul>
-          <!-- <button class="plan-btn paid">Passer Pro — 5€/mois</button> -->
-        <a href="waitlist.html">
-          <button class="plan-btn paid">Fonctionnalités Pro — bientôt disponibles. Laisse ton email pour être notifié.</button>
-        </a>
-      </div>
+  </div>
+
+  <!-- Section Soutien -->
+<div style="margin-top: 4rem; text-align: center; border-top: 1px solid var(--border); padding-top: 3rem;">
+  <h3 style="font-size: 1.6rem; font-weight: 700; letter-spacing: -0.03em; margin-bottom: 0.5rem;">Vous aimez PalettePick ?</h3>
+  <p style="color: var(--muted2); max-width: 400px; margin: 0 auto 1.5rem;">Un petit geste pour soutenir le développement et l’hébergement. Choisissez votre moyen de paiement préféré.</p>
+  <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 16px; margin-bottom: 2rem;">
+    
+    <!-- Wave -->
+    <a href="VOTRE_LIEN_WAVE" target="_blank" style="display: flex; align-items: center; gap: 8px; background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 10px 20px; text-decoration: none; color: var(--text); font-weight: 600; transition: 0.2s;">
+      <img src="assets/logos/wave.jpeg" alt="Wave" style="height: 28px; width: auto;">
+      Wave
+    </a>
+
+    <!-- Djamo -->
+    <a href="VOTRE_LIEN_DJAMO" target="_blank" style="display: flex; align-items: center; gap: 8px; background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 10px 20px; text-decoration: none; color: var(--text); font-weight: 600; transition: 0.2s;">
+      <img src="assets/logos/djamo.jpeg" alt="Djamo" style="height: 28px; width: auto;">
+      Djamo
+    </a>
+
+    <!-- MTN -->
+    <a href="VOTRE_LIEN_MTN" target="_blank" style="display: flex; align-items: center; gap: 8px; background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 10px 20px; text-decoration: none; color: var(--text); font-weight: 600; transition: 0.2s;">
+      <img src="assets/logos/mtn.jpeg" alt="MTN Mobile Money" style="height: 28px; width: auto;">
+      MTN MoMo
+    </a>
+
+    <!-- Orange -->
+    <a href="VOTRE_LIEN_ORANGE" target="_blank" style="display: flex; align-items: center; gap: 8px; background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 10px 20px; text-decoration: none; color: var(--text); font-weight: 600; transition: 0.2s;">
+      <img src="assets/logos/orange.jpeg" alt="Orange Money" style="height: 28px; width: auto;">
+      Orange Money
+    </a>
+
+    <!-- Moov (ajouté) -->
+    <a href="VOTRE_LIEN_MOUV" target="_blank" style="display: flex; align-items: center; gap: 8px; background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 10px 20px; text-decoration: none; color: var(--text); font-weight: 600; transition: 0.2s;">
+      <img src="assets/logos/moov.jpeg" alt="Moov Money" style="height: 28px; width: auto;">
+      Moov Money
+    </a>
+
+  </div>
+  <p style="font-size: 12px; color: var(--muted);">Les liens redirigent vers des pages de paiement sécurisées. Aucune donnée bancaire n’est stockée sur ce site.</p>
+</div>
+
+  <div class="faq">
+    <div class="faq-title">Questions fréquentes</div>
+    <div class="faq-item">
+      <div class="faq-q">Mes images sont-elles envoyées sur un serveur ?</div>
+      <div class="faq-a">Non. Pour le respect de vos données, l’extraction se fait entièrement dans votre navigateur via l’API Canvas. Aucune image ne quitte votre appareil.</div>
     </div>
+    <div class="faq-item">
+      <div class="faq-q">La version gratuite est-elle vraiment gratuite ?</div>
+      <div class="faq-a">Oui, sans limite de temps, sans publicité, sans inscription. Vous pouvez extraire des palettes autant de fois que vous voulez.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Comment puis-je soutenir le projet ?</div>
+      <div class="faq-a">Utilisez les boutons de paiement ci-dessus (Wave, Djamo, MTN, Orange Money) ou les liens d’affiliation présents dans l’outil (Adobe Stock, Canva, etc.).</div>
+    </div>
+  </div>
+</div>
 
     <div class="faq">
       <div class="faq-title">Questions fréquentes</div>

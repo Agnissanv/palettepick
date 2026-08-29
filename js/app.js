@@ -29,6 +29,25 @@ const cssCopyBtn=document.getElementById('cssCopyBtn');
 const resetBtn=document.getElementById('resetBtn');
 
 
+// === Gestion de la modale de don ===
+let analysisCount = 0;
+let donationShown = false;
+
+const donationModal = document.getElementById('donationModal');
+const closeDonation = document.getElementById('closeDonationModal');
+const dismissDonation = document.getElementById('dismissDonation');
+
+function showDonationModal() {
+  if (donationShown || !donationModal) return;
+  donationModal.style.display = 'flex';
+  donationShown = true;
+}
+
+function hideDonationModal() {
+  if (donationModal) donationModal.style.display = 'none';
+}
+
+
 
 
 
@@ -111,6 +130,11 @@ function analyze() {
     cssLines += '}';
     cssCode.innerHTML = cssLines;
     cssPanel.classList.add('visible');
+    // Incrémenter le compteur et afficher la modale si nécessaire
+    analysisCount++;
+    if (analysisCount >= 3 && !donationShown) {
+      showDonationModal();
+    }
 
   } catch (error) {
     // En cas d'erreur, on avertit l'utilisateur et on logue l'erreur pour le debug
@@ -140,3 +164,18 @@ cssCopyBtn.addEventListener('click',()=>{
     setTimeout(()=>cssCopyBtn.textContent='Copier le CSS',1500);
   });
 });
+
+// === Écouteurs pour la modale de don ===
+if (closeDonation) closeDonation.addEventListener('click', hideDonationModal);
+if (dismissDonation) dismissDonation.addEventListener('click', hideDonationModal);
+
+// Clic à l'extérieur de la modale pour la fermer
+if (donationModal) {
+  donationModal.addEventListener('click', function(e) {
+    if (e.target === donationModal) hideDonationModal();
+  });
+}
+
+// Bouton "Offrir un café"
+const donateBtn = document.getElementById('donateButton');
+if (donateBtn) donateBtn.addEventListener('click', showDonationModal);
