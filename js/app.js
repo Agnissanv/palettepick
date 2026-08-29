@@ -382,74 +382,114 @@ function renderHistory() {
   const panel = document.getElementById('historyPanel');
   const list = document.getElementById('historyList');
 
-  console.log('🔍 renderHistory appelé');
-  console.log('📦 panel =', panel);
-  console.log('📦 list =', list);
-  console.log('📦 historique =', history);
-
   if (!panel) {
-    console.error('❌ #historyPanel introuvable dans le DOM');
+    console.error('❌ #historyPanel introuvable');
     return;
   }
 
+  // Si l'historique est vide, on cache le panel et on sort
   if (history.length === 0) {
-    console.log('📭 Aucune palette dans l\'historique');
     panel.style.display = 'none';
     return;
   }
 
-  console.log('✅ Affichage de l\'historique avec', history.length, 'entrées');
+  // Afficher le panel
   panel.style.display = 'block';
   list.innerHTML = '';
 
+  // Pour chaque entrée, créer un élément
   history.forEach((entry, index) => {
+    // Conteneur principal
     const item = document.createElement('div');
-    item.className = 'history-item';
+    item.style.cssText = `
+      background: #1a1a1a;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      padding: 10px 14px;
+      cursor: pointer;
+      transition: 0.2s;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      min-width: 100px;
+    `;
+    item.onmouseover = () => { item.style.borderColor = '#e60026'; };
+    item.onmouseout = () => { item.style.borderColor = 'rgba(255,255,255,0.1)'; };
+    item.onclick = () => restoreFromHistory(index);
 
+    // Ligne des couleurs (swatches)
     const swatchesDiv = document.createElement('div');
-    swatchesDiv.className = 'history-swatches';
-
+    swatchesDiv.style.cssText = 'display: flex; gap: 4px;';
     const displayColors = entry.colors.slice(0, 5);
     displayColors.forEach(([r, g, b]) => {
       const swatch = document.createElement('div');
-      swatch.className = 'history-swatch';
-      swatch.style.background = `rgb(${r}, ${g}, ${b})`;
+      swatch.style.cssText = `
+        width: 28px;
+        height: 28px;
+        border-radius: 4px;
+        background: rgb(${r}, ${g}, ${b});
+        border: 1px solid rgba(255,255,255,0.08);
+      `;
       swatchesDiv.appendChild(swatch);
     });
     if (entry.colors.length > 5) {
       const more = document.createElement('div');
-      more.className = 'history-swatch';
-      more.style.background = 'var(--surface)';
-      more.style.display = 'flex';
-      more.style.alignItems = 'center';
-      more.style.justifyContent = 'center';
-      more.style.fontSize = '8px';
-      more.style.color = 'var(--muted2)';
+      more.style.cssText = `
+        width: 28px;
+        height: 28px;
+        border-radius: 4px;
+        background: #2a2a2a;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 10px;
+        color: #888;
+        border: 1px solid rgba(255,255,255,0.08);
+      `;
       more.textContent = `+${entry.colors.length - 5}`;
       swatchesDiv.appendChild(more);
     }
 
+    // Infos (nombre de couleurs + date)
     const meta = document.createElement('div');
-    meta.className = 'history-meta';
+    meta.style.cssText = `
+      font-size: 11px;
+      color: #888;
+      font-family: monospace;
+    `;
     meta.textContent = `${entry.count} couleurs · ${entry.date}`;
 
+    // Bouton "RESTAURER"
     const btn = document.createElement('button');
-    btn.className = 'history-restore-btn';
+    btn.style.cssText = `
+      background: #e60026;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      padding: 4px 10px;
+      font-size: 10px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      transition: opacity 0.2s;
+      margin-top: 4px;
+    `;
+    btn.onmouseover = () => { btn.style.opacity = '0.8'; };
+    btn.onmouseout = () => { btn.style.opacity = '1'; };
     btn.textContent = 'RESTAURER';
-    btn.addEventListener('click', function(e) {
+    btn.onclick = (e) => {
       e.stopPropagation();
       restoreFromHistory(index);
-    });
+    };
 
-    item.addEventListener('click', function() {
-      restoreFromHistory(index);
-    });
-
+    // Assemblage
     item.appendChild(swatchesDiv);
     item.appendChild(meta);
     item.appendChild(btn);
     list.appendChild(item);
   });
+
+  console.log('✅ Historique affiché avec', history.length, 'entrées');
 }
 
 // --- Effacer l'historique ---
