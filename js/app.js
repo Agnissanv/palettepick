@@ -38,7 +38,6 @@ function saveState() {
     analysisCount: analysisCount,
     donationShown: donationShown
   };
-  // Sauvegarde de l'image en base64
   if (currentImg) {
     const canvas = document.createElement('canvas');
     canvas.width = currentImg.naturalWidth || currentImg.width;
@@ -47,7 +46,6 @@ function saveState() {
     ctx.drawImage(currentImg, 0, 0);
     state.imageBase64 = canvas.toDataURL('image/png');
   }
-  // Sauvegarde des couleurs
   const items = paletteList.querySelectorAll('.pal-row');
   const colors = [];
   items.forEach(row => {
@@ -64,24 +62,22 @@ function loadState() {
   if (!raw) return false;
   try {
     const state = JSON.parse(raw);
-    // Restaurer l'image
     if (state.imageBase64) {
       resultImg.src = state.imageBase64;
       resultImg.onload = () => {
         currentImg = resultImg;
         colorCount = state.colorCount || 5;
-        // Restaurer la palette si elle existe
         if (state.colors && state.colors.length) {
           displayPalette(state.colors);
           cssCode.innerHTML = state.cssLines || '';
           cssPanel.classList.add('visible');
-          // Synchroniser les boutons actifs
           document.querySelectorAll('.count-btn').forEach(btn => {
             btn.classList.toggle('active', parseInt(btn.dataset.n) === colorCount);
           });
         }
         dropZone.style.display = 'none';
         resultArea.classList.add('visible');
+        generateGradient();
       };
     }
     analysisCount = state.analysisCount || 0;
@@ -110,7 +106,6 @@ function hideDonationModal() {
   if (donationModal) donationModal.classList.remove('active');
 }
 
-// === Fonction d'affichage de la palette (utilisée pour restauration) ===
 function displayPalette(colors) {
   paletteList.innerHTML = '';
   colors.forEach((item, i) => {
@@ -156,10 +151,12 @@ document.getElementById('countBar').querySelectorAll('.count-btn').forEach(btn =
 
 resetBtn.addEventListener('click', () => {
   localStorage.removeItem(STORAGE_KEY);
+  localStorage.removeItem('palettepick_history');
   analysisCount = 0;
   donationShown = false;
   resultArea.classList.remove('visible');
   cssPanel.classList.remove('visible');
+  document.getElementById('historyPanel').style.display = 'none';
   dropZone.style.display = 'block';
   fileInput.value = '';
   currentImg = null;
@@ -217,20 +214,13 @@ function analyze() {
     cssCode.innerHTML = cssLines;
     cssPanel.classList.add('visible');
 
-    // === Sauvegarde dans l'historique ===
-    // On convertit la palette brute en tableau de couleurs pour l'historique
+    // Sauvegarde dans l'historique
     const colorsForHistory = palette.map(([r, g, b]) => [r, g, b]);
     saveToHistory(colorsForHistory, colorCount, cssLines);
 
-    console.log('💾 Palette sauvegardée dans l\'historique :', colorsForHistory);
-
-    // Sauvegarde de l'état (restauration de session)
     saveState();
-
-    // Générer automatiquement le dégradé
     generateGradient();
 
-    // Incrémenter le compteur et afficher la modale si nécessaire
     analysisCount++;
     if (analysisCount >= 3 && !donationShown) {
       setTimeout(showDonationModal, 300);
@@ -282,13 +272,12 @@ if (donateBtn) donateBtn.addEventListener('click', showDonationModal);
 // === Restaurer l'état au chargement ===
 window.addEventListener('DOMContentLoaded', function() {
   loadState();
-  renderHistory(); // Affiche l'historique même s'il n'y a pas de palette active
+  renderHistory();
 });
 
 // Si l'utilisateur arrive sur tool.html#donate, ouvrir la modale
 if (window.location.hash === '#donate') {
   setTimeout(showDonationModal, 600);
-  // On retire le hash de l'URL pour ne pas le réafficher au rechargement
   history.replaceState(null, '', window.location.pathname);
 }
 
@@ -313,14 +302,12 @@ function saveToHistory(colors, count, css) {
   const history = getHistory();
   const entry = {
     id: Date.now(),
-    colors: colors, // tableau de [r, g, b]
+    colors: colors,
     count: count,
     css: css,
     date: new Date().toLocaleDateString('fr-FR')
   };
-  // Ajouter en tête
   history.unshift(entry);
-  // Limiter à 10
   if (history.length > MAX_HISTORY) history.length = MAX_HISTORY;
   saveHistory(history);
   renderHistory();
@@ -331,17 +318,14 @@ function restoreFromHistory(index) {
   const entry = history[index];
   if (!entry) return;
 
-  // Restaurer les couleurs
   const palette = entry.colors;
   const count = entry.count;
 
-  // Mettre à jour le compteur de couleurs
   document.getElementById('countBar').querySelectorAll('.count-btn').forEach(btn => {
     btn.classList.toggle('active', parseInt(btn.dataset.n) === count);
   });
   colorCount = count;
 
-  // Recréer l'affichage de la palette
   paletteList.innerHTML = '';
   let cssLines = '<span class="kw">:root</span> {\n';
   palette.forEach(([r, g, b], i) => {
@@ -366,14 +350,10 @@ function restoreFromHistory(index) {
   cssCode.innerHTML = cssLines;
   cssPanel.classList.add('visible');
 
-  // Réafficher la zone de résultat
   resultArea.classList.add('visible');
   dropZone.style.display = 'none';
 
-  // Sauvegarder l'état pour la session
   saveState();
-
-  // Générer automatiquement le dégradé
   generateGradient();
 }
 
@@ -387,19 +367,15 @@ function renderHistory() {
     return;
   }
 
-  // Si l'historique est vide, on cache le panel et on sort
   if (history.length === 0) {
     panel.style.display = 'none';
     return;
   }
 
-  // Afficher le panel
   panel.style.display = 'block';
   list.innerHTML = '';
 
-  // Pour chaque entrée, créer un élément
   history.forEach((entry, index) => {
-    // Conteneur principal
     const item = document.createElement('div');
     item.style.cssText = `
       background: #1a1a1a;
@@ -417,7 +393,6 @@ function renderHistory() {
     item.onmouseout = () => { item.style.borderColor = 'rgba(255,255,255,0.1)'; };
     item.onclick = () => restoreFromHistory(index);
 
-    // Ligne des couleurs (swatches)
     const swatchesDiv = document.createElement('div');
     swatchesDiv.style.cssText = 'display: flex; gap: 4px;';
     const displayColors = entry.colors.slice(0, 5);
@@ -450,16 +425,10 @@ function renderHistory() {
       swatchesDiv.appendChild(more);
     }
 
-    // Infos (nombre de couleurs + date)
     const meta = document.createElement('div');
-    meta.style.cssText = `
-      font-size: 11px;
-      color: #888;
-      font-family: monospace;
-    `;
+    meta.style.cssText = 'font-size: 11px; color: #888; font-family: monospace;';
     meta.textContent = `${entry.count} couleurs · ${entry.date}`;
 
-    // Bouton "RESTAURER"
     const btn = document.createElement('button');
     btn.style.cssText = `
       background: #e60026;
@@ -482,14 +451,11 @@ function renderHistory() {
       restoreFromHistory(index);
     };
 
-    // Assemblage
     item.appendChild(swatchesDiv);
     item.appendChild(meta);
     item.appendChild(btn);
     list.appendChild(item);
   });
-
-  console.log('✅ Historique affiché avec', history.length, 'entrées');
 }
 
 // --- Effacer l'historique ---
@@ -525,11 +491,9 @@ function generateGradient() {
   const directionSelect = document.getElementById('gradientDirection');
 
   if (colors.length < 2) {
-    showToast('Il faut au moins 2 couleurs pour un dégradé.');
     return;
   }
 
-  // Utiliser toutes les couleurs de la palette
   const direction = directionSelect ? directionSelect.value : 'to right';
   const gradColors = colors.join(', ');
   
@@ -547,13 +511,11 @@ function generateGradient() {
   panel.style.display = 'block';
 }
 
-// Écouteur pour le bouton "Générer un dégradé"
 const genGradBtn = document.getElementById('generateGradientBtn');
 if (genGradBtn) {
   genGradBtn.addEventListener('click', generateGradient);
 }
 
-// Écouteur pour copier le CSS du dégradé
 const copyGradBtn = document.getElementById('copyGradientBtn');
 if (copyGradBtn) {
   copyGradBtn.addEventListener('click', function() {
@@ -568,7 +530,6 @@ if (copyGradBtn) {
   });
 }
 
-// Mettre à jour le dégradé quand la direction change
 const dirSelect = document.getElementById('gradientDirection');
 if (dirSelect) {
   dirSelect.addEventListener('change', generateGradient);

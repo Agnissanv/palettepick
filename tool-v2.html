@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PalettePick - Extrait les couleurs de tes images</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #0a0a0a;
+    color: #fff;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    padding: 20px;
+    min-height: 100vh;
+  }
+  .container { max-width: 800px; margin: 0 auto; }
+  h1 { font-size: 28px; margin-bottom: 8px; }
+  h1 span { color: #e60026; }
+  .sub { color: #888; margin-bottom: 30px; }
+
+  .drop-zone {
+    border: 2px dashed #333;
+    border-radius: 16px;
+    padding: 50px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: 0.3s;
+    background: #111;
+  }
+  .drop-zone:hover { border-color: #e60026; background: #1a1a1a; }
+  .drop-zone.dragover { border-color: #e60026; background: #1a1a1a; }
+  .drop-zone input { display: none; }
+
+  .result-area { display: none; margin-top: 30px; }
+  .result-area.visible { display: block; }
+
+  .palette-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 0;
+    border-bottom: 1px solid #1a1a1a;
+  }
+  .swatch {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.1);
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .hex { font-family: monospace; font-size: 14px; flex: 1; }
+  .copy-btn {
+    background: none;
+    border: 1px solid #333;
+    border-radius: 4px;
+    padding: 4px 10px;
+    color: #888;
+    cursor: pointer;
+    font-size: 11px;
+    transition: 0.2s;
+  }
+  .copy-btn:hover { border-color: #e60026; color: #e60026; }
+
+  .css-panel {
+    background: #111;
+    border: 1px solid #1a1a1a;
+    border-left: 3px solid #e60026;
+    border-radius: 8px;
+    padding: 16px;
+    margin-top: 20px;
+    font-family: monospace;
+    font-size: 13px;
+    white-space: pre;
+    overflow-x: auto;
+    display: none;
+  }
+  .css-panel.visible { display: block; }
+
+  /* HISTORIQUE */
+  .history-panel {
+    margin-top: 30px;
+    border-top: 1px solid #1a1a1a;
+    padding-top: 20px;
+  }
+  .history-title {
+    font-size: 12px;
+    color: #666;
+    font-family: monospace;
+    letter-spacing: 1px;
+    margin-bottom: 12px;
+  }
+  .history-list {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .history-item {
+    background: #141414;
+    border: 1px solid #222;
+    border-radius: 10px;
+    padding: 10px 14px;
+    cursor: pointer;
+    transition: 0.2s;
+    min-width: 100px;
+  }
+  .history-item:hover { border-color: #e60026; }
+  .history-swatches {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 6px;
+  }
+  .history-swatch {
+    width: 28px;
+    height: 28px;
+    border-radius: 4px;
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  .history-meta {
+    font-size: 10px;
+    color: #666;
+    font-family: monospace;
+  }
+  .history-restore {
+    background: #e60026;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 3px 10px;
+    font-size: 9px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 4px;
+    transition: 0.2s;
+  }
+  .history-restore:hover { opacity: 0.8; }
+
+  .gradient-preview {
+    width: 100%;
+    height: 80px;
+    border-radius: 8px;
+    border: 1px solid #1a1a1a;
+    margin-top: 12px;
+  }
+
+  .btn {
+    background: #e60026;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 20px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+  .btn:hover { opacity: 0.85; }
+  .btn-secondary {
+    background: none;
+    border: 1px solid #333;
+    color: #888;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+  .btn-secondary:hover { border-color: #666; color: #fff; }
+
+  .toast {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #e60026;
+    color: #fff;
+    padding: 8px 20px;
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: 600;
+    opacity: 0;
+    transition: 0.2s;
+    pointer-events: none;
+  }
+  .toast.show { opacity: 1; }
+
+  .donate-btn {
+    background: none;
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 10px 20px;
+    color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 16px;
+  }
+  .donate-btn:hover { border-color: #e60026; }
+
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.85);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+  }
+  .modal-overlay.active { display: flex; }
+  .modal {
+    background: #141414;
+    border: 1px solid #222;
+    border-radius: 16px;
+    max-width: 480px;
+    width: 90%;
+    padding: 30px;
+    text-align: center;
+    position: relative;
+  }
+  .modal-close {
+    position: absolute;
+    top: 12px;
+    right: 16px;
+    background: none;
+    border: none;
+    color: #666;
+    font-size: 24px;
+    cursor: pointer;
+  }
+  .modal h2 { font-size: 24px; margin-bottom: 8px; }
+  .modal p { color: #888; margin-bottom: 20px; line-height: 1.6; }
+  .modal .payment-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+  }
+  .modal .payment-buttons a {
+    background: #1a1a1a;
+    border: 1px solid #222;
+    border-radius: 8px;
+    padding: 8px 16px;
+    color: #fff;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: 0.2s;
+  }
+  .modal .payment-buttons a:hover { border-color: #e60026; }
+  .modal .payment-buttons img { height: 20px; width: auto; }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Palette<span>Pick</span></h1>
+  <p class="sub">Dépose une image pour extraire ses couleurs dominantes</p>
+
+  <!-- Zone de dépôt -->
+  <div class="drop-zone" id="dropZone">
+    <div style="font-size: 48px; margin-bottom: 12px;">🖼️</div>
+    <div style="font-size: 18px; font-weight: 600; margin-bottom: 4px;">Dépose ton image ici</div>
+    <div style="color: #666; font-size: 13px;">PNG · JPG · WEBP</div>
+    <div style="color: #444; font-size: 12px; margin-top: 8px;">ou clique pour choisir un fichier</div>
+    <input type="file" id="fileInput" accept="image/*">
+  </div>
+
+  <!-- Zone de résultat -->
+  <div class="result-area" id="resultArea">
+    <div style="display: flex; gap: 20px; flex-wrap: wrap; margin-top: 20px;">
+      <img id="resultImg" style="width: 140px; height: 100px; object-fit: cover; border-radius: 8px; border: 1px solid #1a1a1a;" alt="aperçu">
+      <div style="flex: 1; min-width: 200px;">
+        <div style="display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap;">
+          <button class="count-btn active" data-n="5" style="background:none;border:1px solid #333;border-radius:4px;padding:4px 12px;color:#888;cursor:pointer;font-family:monospace;font-size:12px;transition:0.2s;">5 couleurs</button>
+          <button class="count-btn" data-n="8" style="background:none;border:1px solid #333;border-radius:4px;padding:4px 12px;color:#888;cursor:pointer;font-family:monospace;font-size:12px;transition:0.2s;">8 couleurs</button>
+          <button class="count-btn" data-n="10" style="background:none;border:1px solid #333;border-radius:4px;padding:4px 12px;color:#888;cursor:pointer;font-family:monospace;font-size:12px;transition:0.2s;">10 couleurs</button>
+        </div>
+        <div id="paletteList"></div>
+      </div>
+    </div>
+
+    <!-- CSS -->
+    <div class="css-panel" id="cssPanel">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+        <span style="color:#666;font-size:11px;font-family:monospace;">// variables CSS</span>
+        <button id="cssCopyBtn" style="background:#e60026;color:#fff;border:none;border-radius:4px;padding:4px 12px;font-size:11px;font-weight:700;cursor:pointer;">Copier</button>
+      </div>
+      <div id="cssCode"></div>
+    </div>
+
+    <!-- Dégradé -->
+    <div id="gradientPanel" style="margin-top:16px;display:none;">
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px;">
+        <span style="font-size:12px;color:#666;font-family:monospace;">🎨 DÉGRADÉ</span>
+        <select id="gradientDirection" style="background:#111;border:1px solid #222;border-radius:4px;padding:4px 8px;color:#fff;font-size:12px;">
+          <option value="to right">→ Horizontal</option>
+          <option value="to bottom">↓ Vertical</option>
+          <option value="to bottom right">↘ Diagonal</option>
+          <option value="radial">⚪ Radial</option>
+        </select>
+        <button id="copyGradientBtn" style="background:#e60026;color:#fff;border:none;border-radius:4px;padding:4px 12px;font-size:11px;font-weight:700;cursor:pointer;display:none;">Copier CSS</button>
+      </div>
+      <div id="gradientPreview" class="gradient-preview"></div>
+      <div id="gradientCode" style="font-family:monospace;font-size:11px;background:#111;padding:10px;border-radius:6px;border-left:2px solid #e60026;margin-top:8px;display:none;white-space:pre-wrap;word-break:break-all;"></div>
+    </div>
+
+    <!-- Bouton café -->
+    <button class="donate-btn" id="donateButton">☕ Offrir un café</button>
+
+    <!-- HISTORIQUE -->
+    <div class="history-panel" id="historyPanel" style="display:none;">
+      <div class="history-title">📂 HISTORIQUE (10 dernières)</div>
+      <div class="history-list" id="historyList"></div>
+    </div>
+
+    <!-- Actions -->
+    <div style="margin-top:20px;display:flex;gap:10px;flex-wrap:wrap;">
+      <button class="btn-secondary" id="resetBtn">← Nouvelle image</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODALE DE DON -->
+<div class="modal-overlay" id="donationModal">
+  <div class="modal">
+    <button class="modal-close" id="closeDonationModal">&times;</button>
+    <div style="font-size:48px;margin-bottom:8px;">☕</div>
+    <h2>Un café pour le dev ?</h2>
+    <p>PalettePick est 100% gratuit. Si l'outil vous fait gagner du temps, un petit geste est toujours apprécié.</p>
+    <div class="payment-buttons">
+      <a href="VOTRE_LIEN_WAVE" target="_blank">💳 Wave</a>
+      <a href="VOTRE_LIEN_DJAMO" target="_blank">📱 Djamo</a>
+      <a href="VOTRE_LIEN_MTN" target="_blank">📶 MTN</a>
+      <a href="VOTRE_LIEN_ORANGE" target="_blank">🍊 Orange</a>
+      <a href="VOTRE_LIEN_MOOV" target="_blank">📱 Moov</a>
+    </div>
+    <button id="dismissDonation" style="background:none;border:none;color:#666;font-size:12px;cursor:pointer;margin-top:12px;text-decoration:underline;">Pas maintenant</button>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">Copié !</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.0/color-thief.umd.js"></script>
+<script>
+// ============================================================
+// PALETTEPICK - Version complète fonctionnelle
+// ============================================================
+
+// --- Éléments DOM ---
+const dropZone = document.getElementById('dropZone');
+const fileInput = document.getElementById('fileInput');
+const resultArea = document.getElementById('resultArea');
+const resultImg = document.getElementById('resultImg');
+const paletteList = document.getElementById('paletteList');
+const cssPanel = document.getElementById('cssPanel');
+const cssCode = document.getElementById('cssCode');
+const cssCopyBtn = document.getElementById('cssCopyBtn');
+const resetBtn = document.getElementById('resetBtn');
+const toast = document.getElementById('toast');
+
+// --- Historique ---
+const historyPanel = document.getElementById('historyPanel');
+const historyList = document.getElementById('historyList');
+
+// --- Gradient ---
+const gradientPanel = document.getElementById('gradientPanel');
+const gradientPreview = document.getElementById('gradientPreview');
+const gradientCode = document.getElementById('gradientCode');
+const copyGradientBtn = document.getElementById('copyGradientBtn');
+const gradientDirection = document.getElementById('gradientDirection');
+
+// --- Modale don ---
+const donationModal = document.getElementById('donationModal');
+const closeDonationModal = document.getElementById('closeDonationModal');
+const dismissDonation = document.getElementById('dismissDonation');
+const donateButton = document.getElementById('donateButton');
+
+// --- État ---
+const thief = new ColorThief();
+let colorCount = 5;
+let currentImg = null;
+let analysisCount = 0;
+let donationShown = false;
+const varNames = ['primary', 'secondary', 'accent', 'neutral', 'highlight', 'warm', 'cool', 'subtle', 'vivid', 'base'];
+const HISTORY_KEY = 'palettepick_history';
+const MAX_HISTORY = 10;
+
+// --- Toast ---
+function showToast(msg) {
+  toast.textContent = msg || 'Copié !';
+  toast.classList.add('show');
+  clearTimeout(toast._timer);
+  toast._timer = setTimeout(() => toast.classList.remove('show'), 1600);
+}
+
+// --- Couleurs ---
+function rgbToHex(r, g, b) {
+  return '#' + [r, g, b].map(v => v.toString(16).padStart(2, '0')).join('').toUpperCase();
+}
+
+// --- Afficher la palette ---
+function displayPalette(colors) {
+  paletteList.innerHTML = '';
+  colors.forEach((item, i) => {
+    const hex = item.hex || item;
+    const rgb = item.rgb || '';
+    const row = document.createElement('div');
+    row.className = 'palette-row';
+    row.innerHTML = `
+      <div class="swatch" style="background:${hex}" onclick="copyVal('${hex}')"></div>
+      <div class="hex">${hex}</div>
+      <button class="copy-btn" onclick="copyVal('${hex}',this)">HEX</button>
+      <button class="copy-btn" onclick="copyVal('${rgb}',this)">RGB</button>
+    `;
+    paletteList.appendChild(row);
+  });
+}
+
+function copyVal(text, btn) {
+  navigator.clipboard.writeText(text).then(() => {
+    showToast('Copié : ' + text);
+    if (btn) {
+      btn.textContent = '✓';
+      setTimeout(() => btn.textContent = text.startsWith('#') ? 'HEX' : 'RGB', 1200);
+    }
+  });
+}
+
+// --- Générer le dégradé ---
+function generateGradient() {
+  const items = paletteList.querySelectorAll('.palette-row');
+  const colors = [];
+  items.forEach(row => {
+    const hex = row.querySelector('.hex')?.textContent;
+    if (hex) colors.push(hex);
+  });
+
+  if (colors.length < 2) {
+    gradientPanel.style.display = 'none';
+    return;
+  }
+
+  gradientPanel.style.display = 'block';
+  const dir = gradientDirection.value;
+  const gradColors = colors.join(', ');
+  const css = dir === 'radial' 
+    ? `background: radial-gradient(circle, ${gradColors});`
+    : `background: linear-gradient(${dir}, ${gradColors});`;
+  
+  gradientPreview.style.background = css.replace('background: ', '');
+  gradientCode.textContent = css;
+  gradientCode.style.display = 'block';
+  copyGradientBtn.style.display = 'inline-block';
+}
+
+// --- Historique ---
+function getHistory() {
+  try {
+    const raw = localStorage.getItem(HISTORY_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch { return []; }
+}
+
+function saveHistory(history) {
+  localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+}
+
+function saveToHistory(colors, count, css) {
+  const history = getHistory();
+  const entry = {
+    id: Date.now(),
+    colors: colors,
+    count: count,
+    css: css,
+    date: new Date().toLocaleDateString('fr-FR')
+  };
+  history.unshift(entry);
+  if (history.length > MAX_HISTORY) history.length = MAX_HISTORY;
+  saveHistory(history);
+  renderHistory();
+}
+
+function restoreFromHistory(index) {
+  const history = getHistory();
+  const entry = history[index];
+  if (!entry) return;
+
+  const colors = entry.colors.map(([r, g, b]) => ({
+    hex: rgbToHex(r, g, b),
+    rgb: `rgb(${r}, ${g}, ${b})`
+  }));
+
+  colorCount = entry.count;
+  document.querySelectorAll('.count-btn').forEach(btn => {
+    btn.classList.toggle('active', parseInt(btn.dataset.n) === colorCount);
+  });
+
+  displayPalette(colors);
+  cssCode.innerHTML = entry.css || '';
+  cssPanel.classList.add('visible');
+  resultArea.classList.add('visible');
+  dropZone.style.display = 'none';
+
+  generateGradient();
+}
+
+function renderHistory() {
+  const history = getHistory();
+  if (history.length === 0) {
+    historyPanel.style.display = 'none';
+    return;
+  }
+
+  historyPanel.style.display = 'block';
+  historyList.innerHTML = '';
+
+  history.forEach((entry, index) => {
+    const item = document.createElement('div');
+    item.className = 'history-item';
+
+    const swatches = document.createElement('div');
+    swatches.className = 'history-swatches';
+    const displayColors = entry.colors.slice(0, 5);
+    displayColors.forEach(([r, g, b]) => {
+      const sw = document.createElement('div');
+      sw.className = 'history-swatch';
+      sw.style.background = `rgb(${r}, ${g}, ${b})`;
+      swatches.appendChild(sw);
+    });
+    if (entry.colors.length > 5) {
+      const more = document.createElement('div');
+      more.className = 'history-swatch';
+      more.style.cssText = 'background:#222;display:flex;align-items:center;justify-content:center;font-size:9px;color:#888;';
+      more.textContent = `+${entry.colors.length - 5}`;
+      swatches.appendChild(more);
+    }
+
+    const meta = document.createElement('div');
+    meta.className = 'history-meta';
+    meta.textContent = `${entry.count} couleurs · ${entry.date}`;
+
+    const btn = document.createElement('button');
+    btn.className = 'history-restore';
+    btn.textContent = 'RESTAURER';
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      restoreFromHistory(index);
+    });
+
+    item.addEventListener('click', () => restoreFromHistory(index));
+    item.appendChild(swatches);
+    item.appendChild(meta);
+    item.appendChild(btn);
+    historyList.appendChild(item);
+  });
+}
+
+// --- Effacer l'historique (bouton ajouté dynamiquement) ---
+function addClearHistoryBtn() {
+  const existing = document.querySelector('.history-clear-btn');
+  if (existing) existing.remove();
+  const header = document.querySelector('.history-title');
+  if (!header) return;
+  const btn = document.createElement('button');
+  btn.className = 'history-clear-btn';
+  btn.textContent = 'Effacer';
+  btn.style.cssText = 'background:none;border:1px solid #222;border-radius:4px;padding:2px 10px;color:#666;cursor:pointer;font-size:10px;font-family:monospace;margin-left:12px;';
+  btn.addEventListener('click', () => {
+    localStorage.removeItem(HISTORY_KEY);
+    renderHistory();
+    showToast('Historique effacé');
+  });
+  header.appendChild(btn);
+}
+
+// --- Analyse ---
+function analyze() {
+  try {
+    const palette = thief.getPalette(currentImg, colorCount, 5);
+    if (!palette) throw new Error('Extraction échouée');
+
+    const colors = [];
+    paletteList.innerHTML = '';
+    let cssLines = ':root {\n';
+
+    palette.forEach(([r, g, b], i) => {
+      const hex = rgbToHex(r, g, b);
+      const rgbStr = `rgb(${r}, ${g}, ${b})`;
+      const vn = '--color-' + (varNames[i] || 'color-' + (i + 1));
+      cssLines += `  ${vn}: ${hex};\n`;
+
+      const row = document.createElement('div');
+      row.className = 'palette-row';
+      row.innerHTML = `
+        <div class="swatch" style="background:${hex}" onclick="copyVal('${hex}')"></div>
+        <div class="hex">${hex}</div>
+        <button class="copy-btn" onclick="copyVal('${hex}',this)">HEX</button>
+        <button class="copy-btn" onclick="copyVal('${rgbStr}',this)">RGB</button>
+      `;
+      paletteList.appendChild(row);
+      colors.push({ hex, rgb: rgbStr });
+    });
+
+    cssLines += '}';
+    cssCode.textContent = cssLines;
+    cssPanel.classList.add('visible');
+
+    // Historique
+    const rawColors = palette.map(([r, g, b]) => [r, g, b]);
+    saveToHistory(rawColors, colorCount, cssLines);
+
+    // Dégradé
+    generateGradient();
+
+    // Compteur pour modale
+    analysisCount++;
+    if (analysisCount >= 3 && !donationShown) {
+      setTimeout(() => {
+        donationModal.classList.add('active');
+        donationShown = true;
+      }, 300);
+    }
+
+  } catch (e) {
+    console.error(e);
+    showToast('Erreur : image non supportée');
+    resetBtn.click();
+  }
+}
+
+// --- Gestion des fichiers ---
+function handleFile(file) {
+  const url = URL.createObjectURL(file);
+  resultImg.src = url;
+  resultImg.onload = () => {
+    currentImg = resultImg;
+    analyze();
+  };
+  dropZone.style.display = 'none';
+  resultArea.classList.add('visible');
+}
+
+// --- Événements ---
+dropZone.addEventListener('dragover', e => {
+  e.preventDefault();
+  dropZone.classList.add('dragover');
+});
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+dropZone.addEventListener('drop', e => {
+  e.preventDefault();
+  dropZone.classList.remove('dragover');
+  const f = e.dataTransfer.files[0];
+  if (f && f.type.startsWith('image/')) handleFile(f);
+});
+fileInput.addEventListener('change', () => {
+  if (fileInput.files[0]) handleFile(fileInput.files[0]);
+});
+dropZone.addEventListener('click', () => fileInput.click());
+
+// Boutons de comptage
+document.querySelectorAll('.count-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.count-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    colorCount = parseInt(btn.dataset.n);
+    if (currentImg) analyze();
+  });
+});
+
+// CSS Copy
+cssCopyBtn.addEventListener('click', () => {
+  const raw = cssCode.textContent;
+  navigator.clipboard.writeText(raw).then(() => {
+    showToast('CSS copié !');
+    cssCopyBtn.textContent = '✓';
+    setTimeout(() => cssCopyBtn.textContent = 'Copier', 1500);
+  });
+});
+
+// Gradient copy
+copyGradientBtn.addEventListener('click', () => {
+  const text = gradientCode.textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    showToast('Dégradé CSS copié !');
+    copyGradientBtn.textContent = '✓';
+    setTimeout(() => copyGradientBtn.textContent = 'Copier CSS', 1500);
+  });
+});
+
+// Gradient direction
+gradientDirection.addEventListener('change', generateGradient);
+
+// Reset
+resetBtn.addEventListener('click', () => {
+  resultArea.classList.remove('visible');
+  cssPanel.classList.remove('visible');
+  dropZone.style.display = 'block';
+  fileInput.value = '';
+  currentImg = null;
+  paletteList.innerHTML = '';
+  gradientPanel.style.display = 'none';
+  analysisCount = 0;
+  donationShown = false;
+  // On ne supprime PAS l'historique
+});
+
+// Modale de don
+donateButton.addEventListener('click', () => {
+  donationModal.classList.add('active');
+  donationShown = true;
+});
+closeDonationModal.addEventListener('click', () => donationModal.classList.remove('active'));
+dismissDonation.addEventListener('click', () => donationModal.classList.remove('active'));
+donationModal.addEventListener('click', e => {
+  if (e.target === donationModal) donationModal.classList.remove('active');
+});
+
+// --- Chargement ---
+window.addEventListener('DOMContentLoaded', () => {
+  renderHistory();
+  addClearHistoryBtn();
+  // Restaurer une éventuelle palette sauvegardée
+  const saved = localStorage.getItem('palettepick_state');
+  if (saved) {
+    try {
+      const state = JSON.parse(saved);
+      if (state.imageBase64) {
+        resultImg.src = state.imageBase64;
+        resultImg.onload = () => {
+          currentImg = resultImg;
+          colorCount = state.colorCount || 5;
+          document.querySelectorAll('.count-btn').forEach(btn => {
+            btn.classList.toggle('active', parseInt(btn.dataset.n) === colorCount);
+          });
+          if (state.colors && state.colors.length) {
+            displayPalette(state.colors);
+            cssCode.textContent = state.cssLines || '';
+            cssPanel.classList.add('visible');
+            dropZone.style.display = 'none';
+            resultArea.classList.add('visible');
+            generateGradient();
+          }
+        };
+      }
+      analysisCount = state.analysisCount || 0;
+      donationShown = state.donationShown || false;
+    } catch (e) {}
+  }
+});
+
+// --- Sauvegarde de l'état ---
+setInterval(() => {
+  if (!currentImg) return;
+  const state = {
+    colorCount: colorCount,
+    cssLines: cssCode.textContent,
+    analysisCount: analysisCount,
+    donationShown: donationShown,
+    imageBase64: resultImg.src,
+    colors: []
+  };
+  const items = paletteList.querySelectorAll('.palette-row');
+  items.forEach(row => {
+    const hex = row.querySelector('.hex')?.textContent;
+    const rgb = row.querySelector('.copy-btn:last-child')?.textContent === 'RGB' 
+      ? row.querySelector('.copy-btn:last-child')?.getAttribute('onclick')?.match(/'([^']+)'/)?.[1] || ''
+      : '';
+    if (hex) state.colors.push({ hex, rgb });
+  });
+  localStorage.setItem('palettepick_state', JSON.stringify(state));
+}, 5000);
+</script>
+
+</body>
+</html>
